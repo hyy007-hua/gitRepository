@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.chzu.dao.TeaClassMapper">
+  <resultMap id="BaseResultMap" type="com.chzu.model.TeaClass">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="tea_id" jdbcType="VARCHAR" property="teaId" />
+    <result column="cla_id" jdbcType="VARCHAR" property="claId" />
+  </resultMap>
+
+  <delete id="delLinkTeacherAndClass">
+    delete from tea_class
+    where tea_id = #{teaId} and cla_id = #{claId}
+  </delete>
+</mapper>

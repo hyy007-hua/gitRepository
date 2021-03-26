@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.chzu.dao.TbStudentMapper">
+  <resultMap id="BaseResultMap" type="com.chzu.model.TbStudent">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="number" jdbcType="VARCHAR" property="number" />
+    <result column="password" jdbcType="VARCHAR" property="password" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="sex" jdbcType="INTEGER" property="sex" />
+    <result column="tel_number" jdbcType="VARCHAR" property="telNumber" />
+    <result column="email" jdbcType="VARCHAR" property="email" />
+    <result column="group_id" jdbcType="VARCHAR" property="groupId" />
+    <result column="class_id" jdbcType="VARCHAR" property="classId" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+
+  <select id="getListByTeaId" resultMap="BaseResultMap">
+    select * from tb_student stu
+    where stu.class_id in
+        (select tc.cla_id from tea_class tc
+        where tea_id = #{teaId})
+  </select>
+
+  <select id="getByClaNameOrNumber" resultMap="BaseResultMap">
+    select * from tb_student stu
+    where stu.class_id in
+    (select cla.id from tb_class cla
+    where cla.cla_name = #{claName})
+    <if test="number != null">
+      and stu.number like "%"#{number}"%"
+    </if>
+  </select>
+</mapper>

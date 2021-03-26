@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.chzu.dao.TbTeacherMapper">
+  <resultMap id="BaseResultMap" type="com.chzu.model.TbTeacher">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="number" jdbcType="VARCHAR" property="number" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="password" jdbcType="VARCHAR" property="password" />
+    <result column="sex" jdbcType="INTEGER" property="sex" />
+    <result column="email" jdbcType="VARCHAR" property="email" />
+    <result column="tel_number" jdbcType="VARCHAR" property="telNumber" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+
+  <select id="getById" resultMap="BaseResultMap">
+    select * from tb_teacher tea
+    where tea.id = #{id}
+  </select>
+
+  <update id="resetPassword">
+    update tb_teacher
+    set password = #{newPass}
+    where id = #{id}
+  </update>
+
+  <update id="updateInfo">
+    update tb_teacher
+    set sex = #{sex},email = #{eamil},tel_number = #{telNumber}
+    where number = #{number}
+  </update>
+</mapper>

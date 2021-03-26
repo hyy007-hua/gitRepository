@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.chzu.dao.TbClassMapper">
+  <resultMap id="BaseResultMap" type="com.chzu.model.TbClass">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="cla_name" jdbcType="VARCHAR" property="claName" />
+    <result column="cla_size" jdbcType="INTEGER" property="claSize" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+
+  <select id="getClassNameById" resultType="String" parameterType="String">
+    select cla_name
+    from tb_class
+    where id = #{id}
+  </select>
+
+  <update id="updateNumById">
+    update tb_class
+    set cla_size = #{count}
+    where id = #{id}
+  </update>
+
+  <select id="getNotBuildedRelationship" resultMap="BaseResultMap">
+    select * from tb_class cla
+    where cla.id not in
+        (select tc.cla_id
+        from tea_class tc
+         where tc.tea_id = #{teaId})
+  </select>
+
+  <select id="getBuildedRelationship" resultMap="BaseResultMap">
+    select * from tb_class cla
+    where cla.id in
+        (select tc.cla_id
+        from tea_class tc
+         where tc.tea_id = #{teaId})
+  </select>
+
+
+</mapper>

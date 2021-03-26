@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns = "http://www.springframework.org/schema/beans" 
+    xmlns:xsi = "http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:tx="http://www.springframework.org/schema/tx"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:jee = "http://www.springframework.org/schema/jee"
+    xmlns:websocket="http://www.springframework.org/schema/websocket"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/tx
+        http://www.springframework.org/schema/tx/spring-tx.xsd
+        http://www.springframework.org/schema/websocket
+        http://www.springframework.org/schema/websocket/spring-websocket.xsd">
+    
+    <!-- spring管理所有的业务组件，不包括controller -->
+    <context:component-scan base-package="com.chzu">
+        <context:exclude-filter type="annotation" 
+            expression="org.springframework.stereotype.Controller"  />
+    </context:component-scan>
+    
+    <!-- 引用数据库的文件 -->
+    <context:property-placeholder location="classpath:jdbc.properties"/>
+    
+    <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+        <property name="jdbcUrl" value="${url}" ></property>
+        <property name="driverClass" value="${driver}" ></property>
+        <property name="user" value="${user}" ></property>
+        <property name="password" value="${password}" ></property>
+    </bean>
+    
+    <!-- spring事务管理 -->
+    <bean id="dataSourceTransactionManager" 
+        class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"></property>
+    </bean>
+    
+    <!-- 开启基于注解的事务 -->
+    <tx:annotation-driven transaction-manager="dataSourceTransactionManager"/>
+    
+    <!-- mybatis框架的整合 -->
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"></property>
+        <!-- 读取mybatis配置 -->
+        <property name="configLocation" value="classpath:mybatisConfig.xml"></property>
+        <property name="mapperLocations" value="classpath:com/chzu/dao/mapper/*Mapper.xml"></property>
+    </bean>
+    
+    <!-- 扫描所有的mapper接口 -->
+    <!-- <mybatis-spring:scan base-package="com.ssmProject.dao"/> -->
+    <bean class="tk.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"></property>
+        <property name="basePackage" value="com.chzu.dao"></property>
+    </bean>
+
+    <!-- websocket 处理器 -->
+    <bean id="websocketHandler" class="com.chzu.websocket.MyWebSocketHandler"/>
+    <!-- websocket 拦截器 -->
+    <websocket:handlers>
+        <websocket:mapping path="/chat" handler="websocketHandler"/>
+        <websocket:handshake-interceptors>
+            <bean class="com.chzu.websocket.WebSocketInterceptor"/>
+        </websocket:handshake-interceptors>
+    </websocket:handlers>
+    
+</beans>
